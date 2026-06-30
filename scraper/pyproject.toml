@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "collembola-scraper"
+version = "0.1.0"
+description = "Web scraper for Collembola species data"
+authors = []
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.31"
+beautifulsoup4 = "^4.12"
+pandas = "^2.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

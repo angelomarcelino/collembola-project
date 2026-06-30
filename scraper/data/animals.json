@@ -1,0 +1,72 @@
+[
+  {
+    "id": "mock-001",
+    "scientific_name": "Podura aquatica",
+    "common_name": "Water springtail",
+    "family": "Poduridae",
+    "order": "Poduromorpha",
+    "class": "Collembola",
+    "continent": "Europe",
+    "country": "Portugal",
+    "habitat": "Freshwater surfaces",
+    "conservation_status": "LC",
+    "description": "One of the most well-known springtails, commonly found on the surface of still freshwater bodies. It has a distinctive dark blue-black coloration and can jump using its furcula.",
+    "image": "images/mock-001.jpg"
+  },
+  {
+    "id": "mock-002",
+    "scientific_name": "Orchesella villosa",
+    "common_name": "Hairy springtail",
+    "family": "Entomobryidae",
+    "order": "Entomobryomorpha",
+    "class": "Collembola",
+    "continent": "Europe",
+    "country": "United Kingdom",
+    "habitat": "Leaf litter and decaying wood",
+    "conservation_status": "LC",
+    "description": "A large and distinctively banded springtail found in leaf litter and compost heaps. Easily recognized by its orange and dark brown striped pattern.",
+    "image": "images/mock-002.jpg"
+  },
+  {
+    "id": "mock-003",
+    "scientific_name": "Sminthurus viridis",
+    "common_name": "Lucerne flea",
+    "family": "Sminthuridae",
+    "order": "Symphypleona",
+    "class": "Collembola",
+    "continent": "Oceania",
+    "country": "Australia",
+    "habitat": "Agricultural pastures",
+    "conservation_status": "NE",
+    "description": "A globular springtail considered a pest in Australian agriculture, particularly affecting lucerne and clover crops. Has a round green body.",
+    "image": "images/mock-003.jpg"
+  },
+  {
+    "id": "mock-004",
+    "scientific_name": "Folsomia candida",
+    "common_name": "White springtail",
+    "family": "Isotomidae",
+    "order": "Entomobryomorpha",
+    "class": "Collembola",
+    "continent": "Europe",
+    "country": "Netherlands",
+    "habitat": "Soil and caves",
+    "conservation_status": "NE",
+    "description": "A blind, unpigmented springtail widely used as a model organism in ecotoxicology and soil biology research. Reproduces parthenogenetically.",
+    "image": "images/mock-004.jpg"
+  },
+  {
+    "id": "mock-005",
+    "scientific_name": "Dicyrtomina saundersi",
+    "common_name": "Saunders' springtail",
+    "family": "Dicyrtomidae",
+    "order": "Symphypleona",
+    "class": "Collembola",
+    "continent": "Europe",
+    "country": "France",
+    "habitat": "Forest floor leaf litter",
+    "conservation_status": "LC",
+    "description": "A beautifully patterned globular springtail with yellow and purple markings. Found in woodland leaf litter during autumn and winter months.",
+    "image": "images/mock-005.jpg"
+  }
+]

@@ -1,0 +1,381 @@
+/* ===== App Layout ===== */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Header ===== */
+.header {
+  padding: var(--space-xl) var(--space-2xl);
+  border-bottom: 1px solid var(--color-border);
+  background: linear-gradient(
+    180deg,
+    rgba(74, 222, 128, 0.04) 0%,
+    transparent 100%
+  );
+}
+
+.header__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header__title {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--color-accent), #86efac);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header__subtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+  font-weight: 400;
+}
+
+.header__stats {
+  display: flex;
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+.header__stat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.header__stat-value {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* ===== Search Bar ===== */
+.search-bar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-2xl);
+}
+
+.search-bar__input-wrapper {
+  position: relative;
+}
+
+.search-bar__icon {
+  position: absolute;
+  left: var(--space-lg);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-lg);
+  pointer-events: none;
+}
+
+.search-bar__input {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  padding-left: 3rem;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  outline: none;
+}
+
+.search-bar__input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.search-bar__input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-dim);
+}
+
+/* ===== Cards Grid ===== */
+.cards-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-2xl) var(--space-2xl);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-lg);
+  flex: 1;
+}
+
+/* ===== Animal Card ===== */
+.animal-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition:
+    transform var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
+  cursor: default;
+}
+
+.animal-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.animal-card__image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: var(--color-bg-secondary);
+}
+
+.animal-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.animal-card:hover .animal-card__image {
+  transform: scale(1.05);
+}
+
+.animal-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    var(--color-bg-secondary),
+    var(--color-bg-card)
+  );
+}
+
+.animal-card__placeholder-icon {
+  font-size: 3rem;
+  opacity: 0.3;
+}
+
+.animal-card__status-badge {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.animal-card__body {
+  padding: var(--space-lg);
+}
+
+.animal-card__scientific-name {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-style: italic;
+  margin-bottom: var(--space-xs);
+}
+
+.animal-card__common-name {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+.animal-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.animal-card__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.animal-card__description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ===== Status Badge Colors ===== */
+.status--lc {
+  background: rgba(74, 222, 128, 0.15);
+  color: var(--color-status-lc);
+}
+.status--nt {
+  background: rgba(250, 204, 21, 0.15);
+  color: var(--color-status-nt);
+}
+.status--vu {
+  background: rgba(251, 146, 60, 0.15);
+  color: var(--color-status-vu);
+}
+.status--en {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--color-status-en);
+}
+.status--cr {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--color-status-cr);
+}
+.status--ne, .status--dd {
+  background: rgba(148, 163, 184, 0.15);
+  color: var(--color-status-ne);
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2xl);
+  text-align: center;
+}
+
+.empty-state__icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-md);
+  opacity: 0.3;
+}
+
+.empty-state__text {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-muted);
+}
+
+/* ===== Loading ===== */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+}
+
+.loading__spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== Error ===== */
+.error {
+  max-width: 600px;
+  margin: var(--space-2xl) auto;
+  padding: var(--space-xl);
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.error__title {
+  color: #f87171;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+}
+
+.error__message {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* ===== Footer ===== */
+.footer {
+  padding: var(--space-xl) var(--space-2xl);
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .header {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .header__title {
+    font-size: var(--font-size-xl);
+  }
+
+  .header__stats {
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+
+  .search-bar {
+    padding: var(--space-md);
+  }
+
+  .cards-grid {
+    padding: 0 var(--space-md) var(--space-md);
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Card Enter Animation ===== */
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animal-card {
+  animation: cardFadeIn var(--transition-slow) ease both;
+}
+
+.animal-card:nth-child(1) { animation-delay: 0ms; }
+.animal-card:nth-child(2) { animation-delay: 60ms; }
+.animal-card:nth-child(3) { animation-delay: 120ms; }
+.animal-card:nth-child(4) { animation-delay: 180ms; }
+.animal-card:nth-child(5) { animation-delay: 240ms; }
+.animal-card:nth-child(6) { animation-delay: 300ms; }

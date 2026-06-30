@@ -216,3 +216,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Vite
+website/dist/
+*.local
+
+# Website public data (copied by CI)
+website/public/data/
+website/public/images/

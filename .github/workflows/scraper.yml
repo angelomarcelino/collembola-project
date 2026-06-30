@@ -1,0 +1,31 @@
+name: Run Scraper
+
+on:
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install dependencies
+        working-directory: scraper
+        run: poetry install
+
+      - name: Run scraper
+        working-directory: scraper
+        run: poetry run python src/scraper.py
+
+      - name: Commit updated data
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "data: update animals.json"
+          file_pattern: "scraper/data/*.json scraper/images/*"
