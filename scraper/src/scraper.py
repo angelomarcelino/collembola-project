@@ -34,13 +34,13 @@ STATES_MAP = {
 }
 
 HABITAT_MAP = {
-    'TERRESTRE': 'Terrestrial',
-    'AGUA_DOCE': 'Freshwater',
-    'MARINHO': 'Marine',
-    'AGUAS_SUBTERRANEAS': 'Subterranean',
-    'CAVERNICOLA': 'Cave/Subterranean',
+    'TERRESTRE': 'Terrestre',
+    'AGUA_DOCE': 'Água Doce',
+    'MARINHO': 'Marinho',
+    'AGUAS_SUBTERRANEAS': 'Águas Subterrâneas',
+    'CAVERNICOLA': 'Cavernícola',
     'FOSSORIAL': 'Fossorial',
-    'ARBOREO': 'Arboreal',
+    'ARBOREO': 'Arbóreo',
 }
 
 def query_api(endpoint):
@@ -137,7 +137,14 @@ def scrape():
             state_name = STATES_MAP.get(state_code, state_code)
             distributions_by_taxon.setdefault(tid, set()).add(state_name)
 
-    # 4. Process each species and fetch images
+    # 4. Load overrides
+    overrides_file = DATA_DIR / "image_overrides.json"
+    overrides_dict = {}
+    if overrides_file.exists():
+        with open(overrides_file, 'r', encoding='utf-8') as f:
+            overrides_dict = json.load(f)
+            
+    # 5. Process each species and fetch images
     processed_animals = []
     
     for idx, sp in enumerate(species_list):
@@ -181,53 +188,84 @@ def scrape():
         img_dest_path = IMAGES_DIR / img_filename
         image_path = f"images/placeholder.jpg" # Default placeholder
 
-        # Check field images
-        url_campo = f"https://fauna.jbrj.gov.br/fauna/listaBrasil/ConsultaPublicaUC/ResultadoDaConsultaRecuperandoImagemCampo.do?idTaxon={tid}"
-        campo_data = query_url(url_campo)
         downloaded = False
         
-        if campo_data and campo_data.get('imagensCampos'):
-            img_info = campo_data['imagensCampos'][0]
-            # Try urlImageRealSize first, fallback to urlImageReducedSize
-            img_url = img_info.get('urlImageRealSize') or img_info.get('urlImageReducedSize')
-            if img_url:
-                if img_url.startswith('/'):
-                    img_url = "https://fauna.jbrj.gov.br" + img_url
-                logger.info(f"Downloading field image for {scientific_name}: {img_url}")
-                downloaded = download_image(img_url, img_dest_path)
+        # Check for manual overrides first
+        override_img = overrides_dict.get(scientific_name)
+        if override_img:
+            if override_img.startswith("http"):
+                logger.info(f"Downloading OVERRIDE image for {scientific_name}: {override_img}")
+                downloaded = download_image(override_img, img_dest_path)
+            else:
+                logger.info(f"Using OVERRIDE path for {scientific_name}: {override_img}")
+                image_path = override_img
+                downloaded = True
 
-        # Check reference images if field images not available
         if not downloaded:
-            url_ref = f"https://fauna.jbrj.gov.br/fauna/listaBrasil/ConsultaPublicaUC/ResultadoDaConsultaRecuperandoImagemReferencia.do?idTaxon={tid}"
-            ref_data = query_url(url_ref)
-            if ref_data and ref_data.get('ImagemReferencia'):
-                img_info = ref_data['ImagemReferencia'][0]
-                img_url = img_info.get('caminhoCompletoImagem')
-                if img_url:
-                    if img_url.startswith('/'):
-                        img_url = "https://fauna.jbrj.gov.br" + img_url
-                    logger.info(f"Downloading reference image for {scientific_name}: {img_url}")
+            # Query iNaturalist observations with research grade
+            url_inat = f"https://api.inaturalist.org/v1/observations?taxon_name={urllib.parse.quote(scientific_name)}&quality_grade=research&has[]=photos&per_page=1"
+            inat_data = query_url(url_inat)
+            if inat_data and inat_data.get('results'):
+                result = inat_data['results'][0]
+                if result.get('photos') and len(result['photos']) > 0:
+                    img_url = result['photos'][0]['url'].replace('square', 'medium')
+                    logger.info(f"Downloading iNaturalist Research Grade image for {scientific_name}: {img_url}")
                     downloaded = download_image(img_url, img_dest_path)
+            
+            # Fallback to iNaturalist Taxa (default photo) if no research grade observations exist
+            if not downloaded:
+                url_inat_taxa = f"https://api.inaturalist.org/v1/taxa?q={urllib.parse.quote(scientific_name)}&per_page=1"
+                inat_taxa_data = query_url(url_inat_taxa)
+                if inat_taxa_data and inat_taxa_data.get('results'):
+                    result = inat_taxa_data['results'][0]
+                    if result.get('default_photo') and result['default_photo'].get('medium_url'):
+                        img_url = result['default_photo']['medium_url']
+                        logger.info(f"Downloading iNaturalist Taxa image for {scientific_name}: {img_url}")
+                        downloaded = download_image(img_url, img_dest_path)
+
+        # Fallback to iNaturalist if JBRJ fails or has no images
+        if not downloaded:
+            url_inat = f"https://api.inaturalist.org/v1/taxa?q={urllib.parse.quote(scientific_name)}&per_page=1"
+            inat_data = query_url(url_inat)
+            if inat_data and inat_data.get('results'):
+                result = inat_data['results'][0]
+                if result.get('default_photo') and result['default_photo'].get('medium_url'):
+                    img_url = result['default_photo']['medium_url']
+                    logger.info(f"Downloading iNaturalist image for {scientific_name}: {img_url}")
+                    downloaded = download_image(img_url, img_dest_path)
+
+        # Fallback to GBIF if not downloaded yet
+        if not downloaded:
+            url_gbif = f"https://api.gbif.org/v1/occurrence/search?scientificName={urllib.parse.quote(scientific_name)}&mediaType=StillImage&limit=1&basisOfRecord=HUMAN_OBSERVATION"
+            gbif_data = query_url(url_gbif)
+            if gbif_data and gbif_data.get('results'):
+                result = gbif_data['results'][0]
+                if result.get('media'):
+                    images = [m for m in result['media'] if m.get('type') == 'StillImage']
+                    if images and images[0].get('identifier'):
+                        img_url = images[0]['identifier']
+                        logger.info(f"Downloading GBIF image for {scientific_name}: {img_url}")
+                        downloaded = download_image(img_url, img_dest_path)
 
         if downloaded:
             image_path = f"images/{img_filename}"
 
         # Construct description
-        desc_states = f"occur in {states_str}" if states else "occur in Brazil"
+        desc_states = f"ocorrer em: {states_str}" if states else "ocorrer no Brasil"
         description = (
-            f"A species of springtail in the family {family} (order {order}). "
-            f"These Collembola are native to Brazil, known to {desc_states}, "
-            f"and typically found in {habitat.lower()} habitats."
+            f"Uma espécie de colêmbolo da família {family} (ordem {order}). "
+            f"Estes pequenos artrópodes são nativos do Brasil, conhecidos por {desc_states}, "
+            f"e tipicamente encontrados em habitats do tipo {habitat.lower()}."
         )
 
         animal = {
             "id": f"jbrj-{tid}",
             "scientific_name": scientific_name,
-            "common_name": "Springtail",
+            "common_name": "Colêmbolo",
             "family": family,
             "order": order,
             "class": "Collembola",
-            "continent": "South America",
+            "continent": "América do Sul",
             "country": country,
             "habitat": habitat,
             "conservation_status": "NE", # Not Evaluated (default)
@@ -245,6 +283,50 @@ def scrape():
     logger.info(f"Writing {len(processed_animals)} records to {output_file}...")
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(processed_animals, f, ensure_ascii=False, indent=2)
+
+    # 6. Enrich data with JBRJ mv_planilha_extendida
+    logger.info("Enriching data with JBRJ mv_planilha_extendida...")
+    try:
+        import urllib.request
+        req = urllib.request.Request("https://fauna.jbrj.gov.br/rest/mv_planilha_extendida?class=eq.Collembola", headers=HEADERS)
+        with urllib.request.urlopen(req) as response:
+            rich_data_list = json.loads(response.read().decode('utf-8'))
+        
+        rich_map = {str(item.get("taxonID")): item for item in rich_data_list if item.get("taxonID")}
+        
+        for animal in processed_animals:
+            tid = animal["id"].replace("jbrj-", "")
+            rich_info = rich_map.get(tid)
+            if not rich_info: continue
+            
+            is_endemic = rich_info.get("endemicBrazil") == "SIM"
+            origin = rich_info.get("establishmentMeans", "")
+            environments = rich_info.get("environment", "")
+            
+            base_desc = animal.get("description", "")
+            if base_desc.endswith("."): base_desc = base_desc[:-1]
+            
+            rich_parts = []
+            if is_endemic: rich_parts.append("É uma espécie endêmica do Brasil (exclusiva do nosso território)")
+            elif origin.lower() == "native": rich_parts.append("É uma espécie nativa do Brasil")
+            elif origin.lower() == "introduced": rich_parts.append("É uma espécie introduzida no Brasil (exótica)")
+            
+            if environments:
+                envs = [e.strip().capitalize() for e in environments.split(",")]
+                rich_parts.append(f"associada a ambientes {' e '.join(envs).lower()}")
+                
+            if rich_parts:
+                animal["description"] = base_desc + ". " + ", ".join(rich_parts).capitalize() + "."
+            
+            biblio = rich_info.get("bibliographicReference", "").strip()
+            if biblio:
+                animal["bibliography"] = biblio
+                
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(processed_animals, f, ensure_ascii=False, indent=2)
+        logger.info("Enrichment complete.")
+    except Exception as e:
+        logger.error(f"Failed to enrich data: {e}")
         
     logger.info("Scraping completed successfully!")
 
