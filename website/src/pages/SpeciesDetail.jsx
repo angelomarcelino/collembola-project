@@ -71,17 +71,16 @@ export function SpeciesDetail() {
             />
             {(imgError || !animal.image || animal.image.includes('placeholder')) && (
               <div className="detail-image-placeholder-overlay">
-                <span className="placeholder-icon">🔬</span>
                 <p>Imagem indisponível</p>
               </div>
             )}
           </div>
 
           <section className="info-block map-block-left">
-            <h3 className="info-title"><MapPin size={18}/> Distribuição Geográfica</h3>
+            <h3 className="info-title"><MapPin size={18} /> Distribuição Geográfica</h3>
             <p className="detail-text">{animal.country}</p>
             <div className="map-container">
-               <BrazilMap distributionText={animal.country} />
+              <BrazilMap distributionText={animal.country} />
             </div>
           </section>
         </div>
@@ -98,7 +97,7 @@ export function SpeciesDetail() {
           </header>
 
           <section className="info-block">
-            <h3 className="info-title"><Info size={18}/> Classificação Científica</h3>
+            <h3 className="info-title"><Info size={18} /> Classificação Científica</h3>
             <div className="taxonomy-grid">
               <div className="taxonomy-item">
                 <span className="taxonomy-label">Classe</span>
