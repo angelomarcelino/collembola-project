@@ -21,10 +21,10 @@ export function AnimalCard({ animal }) {
   return (
     <Link to={`/species/${animal.id}`} className="animal-card" id={`card-${animal.id}`}>
       <div className="animal-card__image-wrapper">
-        {!imgError ? (
+        {!imgError && animal.image ? (
           <img
             className="animal-card__image"
-            src={animal.image}
+            src={`${import.meta.env.BASE_URL}${animal.image}`}
             alt={animal.scientific_name}
             loading="lazy"
             onError={() => setImgError(true)}

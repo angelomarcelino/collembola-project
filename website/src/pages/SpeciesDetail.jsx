@@ -62,11 +62,12 @@ export function SpeciesDetail() {
       <article className="detail-content">
         <div className="detail-left-column">
           <div className="detail-image-section">
-            {!imgError ? (
+            {!imgError && animal.image ? (
               <img
+                className="detail-image"
                 src={`${import.meta.env.BASE_URL}${animal.image}`}
                 alt={animal.scientific_name}
-                className="detail-image"
+                loading="lazy"
                 onError={() => setImgError(true)}
               />
             ) : (
