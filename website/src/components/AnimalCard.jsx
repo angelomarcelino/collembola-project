@@ -20,18 +20,18 @@ export function AnimalCard({ animal }) {
 
   return (
     <Link to={`/species/${animal.id}`} className="animal-card" id={`card-${animal.id}`}>
-      <div className="animal-card__image-wrapper">
-        {!imgError && animal.image ? (
-          <img
-            className="animal-card__image"
-            src={`${import.meta.env.BASE_URL}${animal.image}`}
-            alt={animal.scientific_name}
-            loading="lazy"
-            onError={() => setImgError(true)}
-          />
-        ) : (
-          <div className="animal-card__placeholder">
+      <div className="animal-card__image-wrapper" style={{ position: 'relative' }}>
+        <img
+          className="animal-card__image"
+          src={imgError || !animal.image ? `${import.meta.env.BASE_URL}images/placeholder.jpg` : `${import.meta.env.BASE_URL}${animal.image}`}
+          alt={animal.scientific_name}
+          loading="lazy"
+          onError={() => setImgError(true)}
+        />
+        {(imgError || !animal.image || animal.image.includes('placeholder')) && (
+          <div className="animal-card__placeholder-overlay">
             <span className="animal-card__placeholder-icon">🔬</span>
+            <p style={{ margin: '8px 0 0', fontWeight: 'bold' }}>Imagem indisponível</p>
           </div>
         )}
         <span className={`animal-card__status-badge ${statusClass}`}>

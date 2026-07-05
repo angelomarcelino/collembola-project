@@ -61,17 +61,16 @@ export function SpeciesDetail() {
 
       <article className="detail-content">
         <div className="detail-left-column">
-          <div className="detail-image-section">
-            {!imgError && animal.image ? (
-              <img
-                className="detail-image"
-                src={`${import.meta.env.BASE_URL}${animal.image}`}
-                alt={animal.scientific_name}
-                loading="lazy"
-                onError={() => setImgError(true)}
-              />
-            ) : (
-              <div className="detail-image-placeholder">
+          <div className="detail-image-section" style={{ position: 'relative' }}>
+            <img
+              className="detail-image"
+              src={imgError || !animal.image ? `${import.meta.env.BASE_URL}images/placeholder.jpg` : `${import.meta.env.BASE_URL}${animal.image}`}
+              alt={animal.scientific_name}
+              loading="lazy"
+              onError={() => setImgError(true)}
+            />
+            {(imgError || !animal.image || animal.image.includes('placeholder')) && (
+              <div className="detail-image-placeholder-overlay">
                 <span className="placeholder-icon">🔬</span>
                 <p>Imagem indisponível</p>
               </div>
