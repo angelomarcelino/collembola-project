@@ -7,6 +7,16 @@ An interactive catalog of Collembola (springtail) species, composed of two indep
 | [Scraper](./scraper/) | Extracts species data from the web | Python + Poetry |
 | [Website](./website/) | Displays species data interactively | React + Vite |
 
+## Delevoped by:
+
+ANGELO MARCELINO CORDEIRO;
+GUILHERME FÉLIX DE MEDEIROS BRANDT;
+MARCUS VINICIUS SILVA NUNES.
+
+## Presentation:
+
+[https://www.youtube.com/watch?v=QIE9LiR4oto](https://www.youtube.com/watch?v=QIE9LiR4oto)
+
 ## Architecture
 
 The modules are fully decoupled. The only integration point is a **data contract** ([`docs/data-contract.md`](./docs/data-contract.md)).
